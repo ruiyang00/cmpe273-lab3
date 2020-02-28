@@ -30,7 +30,7 @@ type_defs = """
     
     type coursesPayload{
         name: String!
-        students:[studentPayload]!
+        enrollStudents:[studentPayload]!
     }
     
 
@@ -60,6 +60,7 @@ def resolve_students(_, info, id):
 
 @query.field("courses")
 def resolve_courses(_, info, id):
+    print(database["classes"])
 
     return database["classes"][id]
 
@@ -68,19 +69,16 @@ def resolve_courses(_, info, id):
 def resolve_createStudent(_, info, newStudent, id):
 
     database["students"][id] = newStudent
-    print(newStudent)
+#
+
     return "Student created"
 
 
 @mutation.field("createCourse")
 def resolve_createCourse(_, info, newCourse, id):
-    addCourse = {
-        "name": newCourse["name"],
-        "enrollStudents": []
-    }
+    newCourse['enrollStudents'] = []
 
-    database["classes"][id] = addCourse
-    print(addCourse)
+    database["classes"][id] = newCourse
     return "Course created"
 
 

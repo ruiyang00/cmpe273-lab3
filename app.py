@@ -7,7 +7,7 @@ type_defs = """
 
     type Query {
         students(id:ID!): studentPayload!
-        courses(id: ID!): coursesPayload!
+        courses(id:ID!): coursesPayload!
     }
 
     input Student {
@@ -16,7 +16,6 @@ type_defs = """
 
     input Course {
         name: String!
-        students:[Student]
     }
 
     type Mutation {
@@ -59,6 +58,12 @@ def resolve_students(_, info, id):
     return database["students"][id]
 
 
+@query.field("courses")
+def resolve_courses(_, info, id):
+
+    return database["classes"][id]
+
+
 @mutation.field("createStudent")
 def resolve_createStudent(_, info, newStudent, id):
 
@@ -83,13 +88,6 @@ def resolve_createCourse(_, info, newCourse, id):
 def resolve_enrollCourse(_, info, student_id, course_id):
     database["classes"][course_id]["enrollStudents"].append(
         database['students'][student_id])
-
-    # database[course_id]['enrollStudents'].append(
-    #     database['students'][student_id])
-
-    # print("This is course ID:" + database[course_id]['enrollStudents'])
-    # print("This is course ID:" + database[course_id])
-    print(database["classes"][course_id])
 
     return "enroll succesfully"
 
